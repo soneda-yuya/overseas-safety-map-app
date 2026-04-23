@@ -71,3 +71,19 @@
 **Context**: Design 本編完了。PR 作成へ。
 
 ---
+
+## U-APP Infrastructure Design Plan Q1-Q6 回答
+
+**Timestamp**: 2026-04-24T05:45:00Z
+**User Input**: "A"（Q1-Q6 全てに対して）
+**AI Response**: Q1-Q6 全て A で確定:
+- Q1 [A]: Firebase project = 親レポと共用
+- Q2 [A]: app identity 1 系統、dev/prod は --dart-define
+- Q3 [A]: APNs Auth Key 方式 (.p8)
+- Q4 [A]: MVP は手元で署名、CI 自動配信見送り
+- Q5 [A]: OSM 公式 tile + attribution
+- Q6 [A]: CI secrets ゼロ (Android debug APK のみ)
+
+**Context**: PR 作成へ。
+
+---
