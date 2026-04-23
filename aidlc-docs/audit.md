@@ -23,3 +23,23 @@
 **Context**: U-APP 着手。次は Design Plan の Q&A。
 
 ---
+
+## U-APP Design Plan Q1-Q10 回答
+
+**Timestamp**: 2026-04-24T05:00:00Z
+**User Input**: "A"（Q1-Q10 全てに対して）
+**AI Response**: Q1-Q10 全て A で確定:
+- Q1 [A]: Riverpod v2
+- Q2 [A]: go_router
+- Q3 [A]: flutter_map (OSM)
+- Q4 [A]: connectrpc.com/connect-dart + buf plugin
+- Q5 [A]: FlutterFire (auth + messaging)
+- Q6 [A]: Feature-sliced + UseCase
+- Q7 [A]: 層別カバレッジ
+- Q8 [A]: Cold 3s / Warm 500ms / tap 100ms
+- Q9 [A]: 最小権限 + メモリのみ
+- Q10 [A]: GitHub Actions lint+test、リリース手動
+
+**Context**: Plan ファイル更新、PR 作成へ。
+
+---
