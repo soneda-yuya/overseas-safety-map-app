@@ -43,3 +43,31 @@
 **Context**: Plan ファイル更新、PR 作成へ。
 
 ---
+
+## U-APP Design Plan #1 マージ + Minimal 合本版 本編 生成
+
+**Timestamp**: 2026-04-24T05:20:00Z
+**User Input**: "マージして次へ"
+**AI Response**: PR #1 (U-APP Design Plan) を squash merge、`feature/u-app-design-plan` 削除、`feature/u-app-design` branch 作成。`construction/U-APP/design/U-APP-design.md` (Minimal 合本版) を生成:
+
+**構成** (7 セクション):
+- §0 Design Decisions (Q1-Q10 [A])
+- §1 Functional Design
+  - §1.1 Context (責務 / 非責務)
+  - §1.2 画面構成 (bottom nav 4 タブ + DetailScreen)
+  - §1.3 ドメインモデル (LatLng / MapFilter / Incident / UserProfile)
+  - §1.4 アーキテクチャ (lib/features/*/{domain,application,presentation}/ + lib/core/)
+  - §1.5 Connect クライアント + AuthInterceptor
+  - §1.6 FCM ライフサイクル
+  - §1.7 go_router config
+  - §1.8 flutter_map (OSM tile + Choropleth + Heatmap + Marker)
+- §2 NFR Requirements (PERF / SEC / REL / OPS / TEST / EXT)
+- §3 NFR Design パターン (Interceptor Chain / Feature-sliced / Cold start / Test / Security)
+- §4 依存パッケージ (pubspec.yaml)
+- §5 トレーサビリティ (US-01〜US-13)
+- §6 不採用 / 制限事項
+- §7 関連ドキュメント
+
+**Context**: Design 本編完了。PR 作成へ。
+
+---
