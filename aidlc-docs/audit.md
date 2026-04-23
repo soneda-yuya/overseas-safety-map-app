@@ -116,3 +116,19 @@
 **Context**: Infrastructure Design 完了。PR 作成へ。
 
 ---
+
+## U-APP Code Generation Plan Q A-F 回答
+
+**Timestamp**: 2026-04-24T06:20:00Z
+**User Input**: "A"（Q A, B, D, E, F）+ "A で protoc_plugin は 25.0.0"（Q C）
+**AI Response**:
+- Q A [A]: 3 PR 分割 (Phase 1-3 / 4-7 / 8-10)
+- Q B [A]: 本レポに proto コピー
+- Q C [A']: connectrpc: ^1.0.0 + protoc_plugin: ^25.0.0 (ユーザー指定で 22.x から上げ)
+- Q D [A]: Golden test 主要 3 画面のみ
+- Q E [A]: Riverpod code generation 使用
+- Q F [A]: lcov 出力のみ (外部サービス連携なし)
+
+**Context**: Plan ファイル更新、PR 作成へ。
+
+---
