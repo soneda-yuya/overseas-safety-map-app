@@ -87,3 +87,32 @@
 **Context**: PR 作成へ。
 
 ---
+
+## U-APP Infrastructure Design 本編 生成
+
+**Timestamp**: 2026-04-24T06:00:00Z
+**User Input**: "マージしました。B"
+**AI Response**: PR #3 merged、main pull、feature/u-app-infra-design branch で 2 ドキュメント生成:
+
+1. `firebase-setup.md` (8 セクション):
+   - iOS / Android app 追加手順
+   - flutterfire configure 自動化
+   - APNs Auth Key (.p8) 作成 + Firebase Console アップロード
+   - iOS Info.plist / Xcode Capabilities 設定
+   - Android AndroidManifest.xml 権限 + Notification Channel
+   - Anonymous Auth 有効化確認
+   - Firestore Security Rules (親レポ側)
+   - チェックリスト
+
+2. `mobile-deployment.md` (7 セクション):
+   - Android keystore 生成 + build.gradle 署名設定
+   - iOS Xcode Automatic Signing
+   - --dart-define による dev/prod 切替
+   - OSM tile + attribution 実装 + Tile Usage Policy 遵守
+   - GitHub Actions CI (MVP は secrets ゼロ)
+   - リリース workflow の将来拡張 (secrets 一覧)
+   - リリースチェックリスト
+
+**Context**: Infrastructure Design 完了。PR 作成へ。
+
+---
