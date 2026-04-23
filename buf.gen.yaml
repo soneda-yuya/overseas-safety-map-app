@@ -1,0 +1,15 @@
+version: v2
+clean: true
+# Generate Dart protobuf classes + Connect client stubs. The `dart` plugin
+# comes from `protoc_plugin` (dev dep, Q C — resolved to ^22.5.0 pending
+# connectrpc supporting protobuf 6.x; see audit.md / plan PR #5).
+#
+# Generated files are committed under lib/gen/v1/ so fresh clones build
+# without running buf locally.
+plugins:
+  - local: protoc-gen-dart
+    out: lib/gen
+    opt:
+      - grpc  # connectrpc uses the grpc service stubs as a starting point
+inputs:
+  - directory: proto

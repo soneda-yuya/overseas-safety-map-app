@@ -132,3 +132,43 @@
 **Context**: Plan ファイル更新、PR 作成へ。
 
 ---
+
+## U-APP Code Generation PR A (Phase 1-3) 実装
+
+**Timestamp**: 2026-04-24T06:50:00Z
+**User Input**: "B: 次の段階に進む" → Code Gen PR A 着手 → "C" (protoc_plugin 25.0 は connectrpc と非互換、^22.5 で進行)
+**AI Response**: `feature/u-app-code-gen-a` branch で Phase 1-3 実装:
+
+**Phase 1: Dependencies**
+- `pubspec.yaml` に全依存追加（`flutter pub add` で resolver が互換性あるバージョンを解決）
+- **Q C [A'] の制約発見**: `protoc_plugin 25.0.0` は `protobuf ^6.0.0` 要求、`connectrpc 1.0.0` は `protobuf <5.0.0`。ユーザー選択 C (現状 ^22.5.0 で進行、follow-up で upgrade)
+- `grpc ^4.2.0` を追加 (generated pbgrpc.dart が要求)
+- `lib/firebase_options.dart` placeholder 作成 (flutterfire configure で差替え予定)
+- `lib/main.dart` を Firebase init + ProviderScope + Android channel 登録に書換
+- `lib/app.dart` は PR A 完了表示用の placeholder (PR B で go_router wiring)
+
+**Phase 2: Proto 生成**
+- `proto/v1/{common,pubsub,safetymap}.proto` を親レポからコピー (Q B [A])
+- `proto/google/protobuf/timestamp.proto` を protoc includes からコピー (well-known type)
+- `buf.yaml` + `buf.gen.yaml` 配置
+- `protoc_plugin 22.5.0` を `dart pub global activate` で有効化
+- `buf generate` で `lib/gen/v1/*.dart` + `lib/gen/google/protobuf/timestamp.pb.dart` を生成
+
+**Phase 3: Core レイヤ**
+- `core/env.dart`: `--dart-define` で BFF_BASE_URL / ENVIRONMENT
+- `core/observability/logger.dart`: dart:developer wrapper、prod は info level drop
+- `core/auth/anonymous_auth.dart`: FirebaseIdTokenProvider + Riverpod providers
+- `core/rpc/auth_interceptor.dart`: grpc.ClientInterceptor で Bearer ヘッダ付与
+- `core/rpc/error_mapper.dart`: GrpcError → AppError、prod で Internal/Unavailable mask
+- `core/rpc/bff_client.dart`: ClientChannel + 3 service client factory、Riverpod Provider
+- `core/fcm/fcm_service.dart`: onMessage / onBackgroundMessage 登録、top-level handler
+- `core/fcm/notification_channel.dart`: Android 8+ 用 foreground presentation
+
+**検証**:
+- flutter pub get 緑
+- flutter analyze 緑 (No issues found)
+- flutter test 緑 (1 passed)
+
+**Context**: Phase 4-7 (domain / app / presentation / routing) は PR B、Phase 8-10 (tests / CI / docs) は PR C。
+
+---
