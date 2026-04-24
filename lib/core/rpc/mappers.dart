@@ -14,13 +14,23 @@ import '../../features/map/domain/map_filter.dart';
 import '../../features/profile/domain/user_profile.dart' as profiledom;
 
 dom.Incident incidentFromProto(pbv1.SafetyIncident p) {
+  // leave_date is required at the MOFA source (see parent repo
+  // safetyincident/domain/mail_item.go Validate); a missing value is
+  // schema drift on the server side. Throwing here makes the bug loud
+  // rather than silently rendering `1970-01-01` on the UI.
+  if (!p.hasLeaveDate()) {
+    throw FormatException(
+      'SafetyIncident is missing required leaveDate '
+      '(key_cd="${p.keyCd}")',
+    );
+  }
   return dom.Incident(
     keyCd: p.keyCd,
     infoType: p.infoType,
     title: p.title,
     countryCd: p.countryCd,
     countryName: p.countryName,
-    leaveDate: _timestampToDate(p.hasLeaveDate() ? p.leaveDate : null),
+    leaveDate: p.leaveDate.toDateTime().toLocal(),
     location: LatLng(p.geometry.lat, p.geometry.lng),
     geocodeSource: _geocodeSourceFromProto(p.geocodeSource),
     lead: p.lead,
@@ -114,11 +124,6 @@ pbv1.NotificationPreference preferenceToProto(
     ..enabled = pref.enabled
     ..targetCountryCds.addAll(pref.targetCountryCds)
     ..infoTypes.addAll(pref.infoTypes);
-}
-
-DateTime _timestampToDate(tspb.Timestamp? ts) {
-  if (ts == null) return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);
-  return ts.toDateTime().toLocal();
 }
 
 dom.GeocodeSource _geocodeSourceFromProto(GeocodeSource src) {

@@ -54,6 +54,6 @@ class AsyncRetryBody extends StatelessWidget {
           return '予期しないエラーが発生しました。';
       }
     }
-    return '通信エラーが発生しました';
+    return '通信エラーが発生しました。';
   }
 }

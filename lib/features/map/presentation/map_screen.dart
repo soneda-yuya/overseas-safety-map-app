@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/observability/logger.dart';
 import '../../../shared/widgets/async_retry.dart';
 import '../application/heatmap_usecase.dart';
 import '../domain/heatmap.dart';
@@ -94,9 +95,7 @@ class _MapBody extends StatelessWidget {
               attributions: [
                 TextSourceAttribution(
                   'OpenStreetMap contributors',
-                  onTap: () => launchUrl(
-                    Uri.parse('https://www.openstreetmap.org/copyright'),
-                  ),
+                  onTap: () => _openOsmCopyright(context),
                 ),
               ],
             ),
@@ -134,5 +133,28 @@ class _IncidentDot extends StatelessWidget {
         border: Border.all(color: Colors.white, width: 2),
       ),
     );
+  }
+}
+
+/// Opens the OSM copyright page and surfaces a SnackBar if the launch
+/// fails so users realise their tap wasn't ignored.
+Future<void> _openOsmCopyright(BuildContext context) async {
+  const failure = 'OpenStreetMap のページを開けませんでした。';
+  const logger = AppLogger('ui.launch_url');
+  final uri = Uri.parse('https://www.openstreetmap.org/copyright');
+  try {
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(failure)),
+      );
+    }
+  } catch (error, stack) {
+    logger.warn('launchUrl threw', error: error, stackTrace: stack);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(failure)),
+      );
+    }
   }
 }

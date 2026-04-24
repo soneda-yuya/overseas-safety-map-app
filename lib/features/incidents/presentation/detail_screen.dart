@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/observability/logger.dart';
 import '../../../shared/widgets/async_retry.dart';
 import '../application/get_usecase.dart';
 
@@ -48,7 +49,7 @@ class DetailScreen extends ConsumerWidget {
               OutlinedButton.icon(
                 icon: const Icon(Icons.open_in_new),
                 label: const Text('外務省サイトで全文を見る'),
-                onPressed: () => launchUrl(Uri.parse(incident.infoUrl)),
+                onPressed: () => _openExternal(context, incident.infoUrl),
               ),
             ],
           ],
@@ -60,5 +61,38 @@ class DetailScreen extends ConsumerWidget {
   String _formatDate(DateTime d) {
     String two(int v) => v < 10 ? '0$v' : '$v';
     return '${d.year}-${two(d.month)}-${two(d.day)}';
+  }
+}
+
+/// Wraps `launchUrl` so a failure (malformed URI, no browser available,
+/// OS refusal) surfaces as a SnackBar instead of a silent no-op. Uses
+/// LaunchMode.externalApplication explicitly so the link opens in the
+/// device browser rather than an in-app webview.
+Future<void> _openExternal(BuildContext context, String raw) async {
+  const failure = 'リンクを開けませんでした。';
+  const logger = AppLogger('ui.launch_url');
+  final uri = Uri.tryParse(raw);
+  if (uri == null) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('リンクが不正です。')),
+      );
+    }
+    return;
+  }
+  try {
+    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(failure)),
+      );
+    }
+  } catch (error, stack) {
+    logger.warn('launchUrl threw', error: error, stackTrace: stack);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(failure)),
+      );
+    }
   }
 }

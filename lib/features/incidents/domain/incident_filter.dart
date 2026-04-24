@@ -19,21 +19,30 @@ class IncidentFilter {
   final int limit;
   final String cursor;
 
+  /// Sentinel-aware copyWith: pass `null` explicitly to clear a nullable
+  /// filter axis; omit the argument to keep the current value. A plain
+  /// `param ?? this.param` would prevent the UI from removing an active
+  /// country / area / date filter.
   IncidentFilter copyWith({
-    String? countryCd,
-    String? areaCd,
+    Object? countryCd = _unset,
+    Object? areaCd = _unset,
     List<String>? infoTypes,
-    DateTime? leaveFrom,
-    DateTime? leaveTo,
+    Object? leaveFrom = _unset,
+    Object? leaveTo = _unset,
     int? limit,
     String? cursor,
   }) {
     return IncidentFilter(
-      countryCd: countryCd ?? this.countryCd,
-      areaCd: areaCd ?? this.areaCd,
+      countryCd: identical(countryCd, _unset)
+          ? this.countryCd
+          : countryCd as String?,
+      areaCd: identical(areaCd, _unset) ? this.areaCd : areaCd as String?,
       infoTypes: infoTypes ?? this.infoTypes,
-      leaveFrom: leaveFrom ?? this.leaveFrom,
-      leaveTo: leaveTo ?? this.leaveTo,
+      leaveFrom: identical(leaveFrom, _unset)
+          ? this.leaveFrom
+          : leaveFrom as DateTime?,
+      leaveTo:
+          identical(leaveTo, _unset) ? this.leaveTo : leaveTo as DateTime?,
       limit: limit ?? this.limit,
       cursor: cursor ?? this.cursor,
     );
@@ -61,6 +70,8 @@ class IncidentFilter {
         cursor,
       );
 }
+
+const Object _unset = Object();
 
 bool _listEqual(List<String> a, List<String> b) {
   if (a.length != b.length) return false;

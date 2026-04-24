@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/anonymous_auth.dart';
+import '../../../core/observability/logger.dart';
 
 /// Displayed while Firebase initialises and we kick off the anonymous
 /// sign-in. The router's redirect (auth gate) sends callers here when the
@@ -29,10 +30,21 @@ class SplashScreen extends ConsumerWidget {
               const SizedBox(height: 32),
               auth.when(
                 loading: () => const CircularProgressIndicator(),
-                error: (e, _) => _ErrorBody(
-                  message: '認証に失敗しました: $e',
-                  onRetry: () => ref.invalidate(authStateProvider),
-                ),
+                error: (e, stack) {
+                  // Log the raw error for DevTools / Crashlytics follow-up,
+                  // but show a generic message so Firebase internals don't
+                  // leak into the UI (consistency with ErrorInterceptor's
+                  // prod masking).
+                  const AppLogger('auth.splash').error(
+                    'authStateChanges failed',
+                    error: e,
+                    stackTrace: stack,
+                  );
+                  return _ErrorBody(
+                    message: '認証に失敗しました。時間をおいて再試行してください。',
+                    onRetry: () => ref.invalidate(authStateProvider),
+                  );
+                },
                 data: (_) => const CircularProgressIndicator(),
               ),
             ],
