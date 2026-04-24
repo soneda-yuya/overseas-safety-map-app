@@ -10,18 +10,45 @@ import '../domain/incident_filter.dart';
 /// Incidents tab. MVP shows the first page of incidents for the current
 /// filter; country dropdown + info-type filter lands in a follow-up.
 class ListScreen extends ConsumerStatefulWidget {
-  const ListScreen({super.key});
+  const ListScreen({
+    super.key,
+    this.initialCountryCd,
+    this.initialCountryName,
+  });
+
+  /// Country code to pre-filter on (e.g. from a map tap via
+  /// `/incidents?country=XX`). Null means no country filter.
+  final String? initialCountryCd;
+
+  /// Human-readable country name shown in the filter chip. Passed alongside
+  /// initialCountryCd because the screen does not have a lookup table from
+  /// code → name; the caller (the map's country list sheet) already has it.
+  final String? initialCountryName;
 
   @override
   ConsumerState<ListScreen> createState() => _ListScreenState();
 }
 
 class _ListScreenState extends ConsumerState<ListScreen> {
-  final IncidentFilter _filter = const IncidentFilter();
+  late IncidentFilter _filter;
+
+  @override
+  void initState() {
+    super.initState();
+    _filter = IncidentFilter(countryCd: widget.initialCountryCd);
+  }
+
+  void _clearCountryFilter() {
+    // Drop the query param by navigating back to the unfiltered route; the
+    // GoRoute builder uses a ValueKey on the country so a fresh ListScreen
+    // state is created, which re-reads null from initialCountryCd.
+    context.go('/incidents');
+  }
 
   @override
   Widget build(BuildContext context) {
     final page = ref.watch(incidentsPageProvider(_filter));
+    final hasCountryFilter = _filter.countryCd != null;
 
     return Scaffold(
       appBar: AppBar(
@@ -33,6 +60,25 @@ class _ListScreenState extends ConsumerState<ListScreen> {
             onPressed: () => ref.invalidate(incidentsPageProvider(_filter)),
           ),
         ],
+        bottom: hasCountryFilter
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(48),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: Row(
+                    children: [
+                      InputChip(
+                        avatar: const Icon(Icons.flag_outlined, size: 18),
+                        label: Text(
+                          widget.initialCountryName ?? _filter.countryCd!,
+                        ),
+                        onDeleted: _clearCountryFilter,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : null,
       ),
       body: page.when(
         loading: () => const Center(child: CircularProgressIndicator()),

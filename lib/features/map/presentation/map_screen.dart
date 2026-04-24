@@ -9,6 +9,7 @@ import '../../../shared/widgets/async_retry.dart';
 import '../application/heatmap_usecase.dart';
 import '../domain/heatmap.dart';
 import '../domain/map_filter.dart';
+import 'country_list_sheet.dart';
 
 /// Map tab. MVP scope: render the OSM tile layer + a heatmap of incident
 /// points. The choropleth / nearby views share this screen and land in
@@ -24,6 +25,15 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final MapFilter _filter = const MapFilter();
 
+  Future<void> _openCountrySheet(BuildContext context) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: false,
+      builder: (_) => CountryListSheet(filter: _filter),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final heatmap = ref.watch(heatmapProvider(_filter));
@@ -32,6 +42,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       appBar: AppBar(
         title: const Text('地図'),
         actions: [
+          IconButton(
+            tooltip: '国別件数',
+            icon: const Icon(Icons.flag_outlined),
+            onPressed: () => _openCountrySheet(context),
+          ),
           IconButton(
             tooltip: '再読み込み',
             icon: const Icon(Icons.refresh),
