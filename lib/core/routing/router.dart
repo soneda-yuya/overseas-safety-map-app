@@ -12,7 +12,8 @@ import '../../features/profile/presentation/profile_screen.dart';
 import '../auth/anonymous_auth.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
+  final refresh = _AuthRefresh(ref);
+  final router = GoRouter(
     initialLocation: '/map',
     redirect: (context, state) {
       final auth = ref.read(authStateProvider);
@@ -24,7 +25,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (loggedIn && state.matchedLocation == '/splash') return '/map';
       return null;
     },
-    refreshListenable: _AuthRefresh(ref),
+    refreshListenable: refresh,
     routes: [
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
       ShellRoute(
@@ -51,6 +52,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+  // Release the GoRouter + its ChangeNotifier when this provider is torn
+  // down (hot reload, test override, future refactor). Without this the
+  // Firebase auth subscription in _AuthRefresh leaks.
+  ref.onDispose(() {
+    router.dispose();
+    refresh.dispose();
+  });
+  return router;
 });
 
 /// Drives go_router's `refreshListenable` off the Firebase auth state. Every

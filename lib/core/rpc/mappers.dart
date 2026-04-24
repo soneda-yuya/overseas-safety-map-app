@@ -28,6 +28,16 @@ dom.Incident incidentFromProto(pbv1.SafetyIncident p) {
       '(key_cd="${p.keyCd}")',
     );
   }
+  // In proto3 an unset message field decodes as the default instance, so
+  // `p.geometry` silently becomes (0, 0) off West Africa if the server
+  // forgot to populate it. The BFF domain treats geometry as required;
+  // surface the drift loudly here rather than showing a phantom pin.
+  if (!p.hasGeometry()) {
+    throw FormatException(
+      'SafetyIncident is missing required geometry '
+      '(key_cd="${p.keyCd}")',
+    );
+  }
   return dom.Incident(
     keyCd: p.keyCd,
     infoType: p.infoType,

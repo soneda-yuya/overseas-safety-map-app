@@ -20,8 +20,18 @@ class NotificationHistoryScreen extends ConsumerWidget {
           IconButton(
             tooltip: '履歴をクリア',
             icon: const Icon(Icons.delete_outline),
-            onPressed: () =>
-                ref.read(notificationHistoryProvider.notifier).clear(),
+            onPressed: () async {
+              try {
+                await ref
+                    .read(notificationHistoryProvider.notifier)
+                    .clear();
+              } catch (_) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('履歴のクリアに失敗しました。')),
+                );
+              }
+            },
           ),
         ],
       ),
