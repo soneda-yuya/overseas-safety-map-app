@@ -42,7 +42,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: '/map', builder: (_, _) => const MapScreen()),
           GoRoute(
             path: '/incidents',
-            builder: (_, _) => const ListScreen(),
+            builder: (_, state) {
+              final country = state.uri.queryParameters['country'];
+              final countryName = state.uri.queryParameters['countryName'];
+              // The Key forces a fresh ListScreen State whenever the
+              // country filter changes; otherwise Flutter would reuse
+              // the old State's cached _filter and ignore the new query.
+              return ListScreen(
+                key: ValueKey('incidents:${country ?? ''}'),
+                initialCountryCd: country,
+                initialCountryName: countryName,
+              );
+            },
             routes: [
               GoRoute(
                 path: 'detail/:keyCd',

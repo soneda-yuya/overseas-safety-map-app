@@ -2,10 +2,17 @@ import 'package:latlong2/latlong.dart';
 
 /// One point on the heatmap. Weight is 1.0 today (MVP); keeping it as a
 /// first-class field preserves the server's option to supply a severity
-/// weight later without breaking the client.
+/// weight later without breaking the client. [keyCd] carries the originating
+/// SafetyIncident identifier so map-pin taps can route to the detail view —
+/// heatmap points are 1:1 with incidents today.
 class HeatmapPoint {
-  const HeatmapPoint({required this.location, required this.weight});
+  const HeatmapPoint({
+    required this.keyCd,
+    required this.location,
+    required this.weight,
+  });
 
+  final String keyCd;
   final LatLng location;
   final double weight;
 }

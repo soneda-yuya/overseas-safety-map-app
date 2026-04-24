@@ -2,6 +2,32 @@
 
 外務省 海外安全情報マップの Flutter クライアント（iOS / Android）。親サーバリポジトリ [`overseas-safety-map`](https://github.com/soneda-yuya/overseas-safety-map) の BFF（Cloud Run、Connect RPC）を唯一の後端として、地図 / 一覧 / 通知 / 設定の 4 タブで安全情報を表示する。
 
+## 機能
+
+### 地図タブ
+
+- OpenStreetMap タイル上に、Mapbox で city-level ジオコードに成功した事件を赤ドットで描画（国 centroid のみの fallback 事件はここには乗せず、左上バナーで件数だけ告知）
+- **ピンタップ**: タップ座標を中心に半径 300km・最大 5 件の近傍事件を `ListNearby` で取得し、ボトムシートでタイトル / 国 / 発生日を一覧表示。各行タップで詳細画面、フッター「〇〇 の一覧をもっと見る」で該当国フィルタ付きの一覧タブへ
+- **国別件数シート**: AppBar の🏳アイコン → `GetChoropleth` の結果を件数降順に並べたシート。国タップで一覧タブにその国だけを表示
+- **再読み込み**: AppBar ⟳ でヒートマップと choropleth をそれぞれ invalidate
+
+### 一覧タブ
+
+- infoType (危険 / 注意 / ｽﾎﾟｯﾄ / 情報) を色分けしたリスト
+- 国フィルタ Chip (× で解除) — 地図の国別件数シート / ピンタップから deep-link で適用
+- 行タップで詳細画面（タイトル / 本文 / 国 / 発生日 / 外部URL）
+
+### 通知タブ
+
+- FCM で受信した past 通知を最大 100 件キャッシュして時系列表示（`shared_preferences` + AsyncNotifier）
+- 行タップで該当事件の詳細画面、ヘッダ「クリア」で履歴一掃
+
+### 設定タブ
+
+- Firebase Anonymous Auth 済みプロファイルの表示
+- 通知有効 / 無効のトグル（optimistic update + 失敗時 rollback）
+- お気に入り国・対象 infoType・FCM token 登録件数
+
 ## アーキテクチャ
 
 - **状態管理**: Riverpod v2（`flutter_riverpod` + `riverpod_annotation` + codegen）
@@ -44,9 +70,11 @@ flutterfire configure
 
 ```bash
 flutter run \
-  --dart-define=BFF_BASE_URL=https://bff-dev.run.app \
+  --dart-define=BFF_BASE_URL=https://bff-9675530544.asia-northeast1.run.app \
   --dart-define=ENVIRONMENT=dev
 ```
+
+`BFF_BASE_URL` は自分でデプロイした Cloud Run の URL に差し替える。`ENVIRONMENT` は `dev` / `staging` / `prod` のいずれか — `prod` は `core/observability/logger.dart` で info ログが drop され、`core/rpc/error_mapper.dart` で Internal/Unavailable のメッセージがマスクされる。
 
 ### Proto 再生成
 

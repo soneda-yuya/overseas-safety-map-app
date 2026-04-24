@@ -9,6 +9,8 @@ import '../../../shared/widgets/async_retry.dart';
 import '../application/heatmap_usecase.dart';
 import '../domain/heatmap.dart';
 import '../domain/map_filter.dart';
+import 'country_list_sheet.dart';
+import 'pin_detail_sheet.dart';
 
 /// Map tab. MVP scope: render the OSM tile layer + a heatmap of incident
 /// points. The choropleth / nearby views share this screen and land in
@@ -24,6 +26,15 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final MapFilter _filter = const MapFilter();
 
+  Future<void> _openCountrySheet(BuildContext context) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: false,
+      builder: (_) => CountryListSheet(filter: _filter),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final heatmap = ref.watch(heatmapProvider(_filter));
@@ -32,6 +43,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       appBar: AppBar(
         title: const Text('地図'),
         actions: [
+          IconButton(
+            tooltip: '国別件数',
+            icon: const Icon(Icons.flag_outlined),
+            onPressed: () => _openCountrySheet(context),
+          ),
           IconButton(
             tooltip: '再読み込み',
             icon: const Icon(Icons.refresh),
@@ -90,9 +106,16 @@ class _MapBody extends StatelessWidget {
                 for (final p in result.points)
                   Marker(
                     point: p.location,
-                    width: 16,
-                    height: 16,
-                    child: const _IncidentDot(),
+                    // Widen the marker bounds well beyond the visible dot
+                    // so the gesture target matches Material's 48dp min,
+                    // even though the dot itself stays small.
+                    width: 32,
+                    height: 32,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _openPinSheet(context, p.location),
+                      child: const Center(child: _IncidentDot()),
+                    ),
                   ),
               ],
             ),
@@ -132,6 +155,8 @@ class _IncidentDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 16,
+      height: 16,
       decoration: BoxDecoration(
         color: Colors.redAccent.withValues(alpha: 0.8),
         shape: BoxShape.circle,
@@ -139,6 +164,15 @@ class _IncidentDot extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _openPinSheet(BuildContext context, LatLng center) {
+  return showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: false,
+    isScrollControlled: true,
+    builder: (_) => PinDetailSheet(center: center),
+  );
 }
 
 /// Opens the OSM copyright page and surfaces a SnackBar if the launch

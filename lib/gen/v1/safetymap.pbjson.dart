@@ -396,13 +396,15 @@ const HeatmapPoint$json = {
       '10': 'location'
     },
     {'1': 'weight', '3': 2, '4': 1, '5': 1, '10': 'weight'},
+    {'1': 'key_cd', '3': 3, '4': 1, '5': 9, '10': 'keyCd'},
   ],
 };
 
 /// Descriptor for `HeatmapPoint`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List heatmapPointDescriptor = $convert.base64Decode(
     'CgxIZWF0bWFwUG9pbnQSMQoIbG9jYXRpb24YASABKAsyFS5vdmVyc2Vhc21hcC52MS5Qb2ludF'
-    'IIbG9jYXRpb24SFgoGd2VpZ2h0GAIgASgBUgZ3ZWlnaHQ=');
+    'IIbG9jYXRpb24SFgoGd2VpZ2h0GAIgASgBUgZ3ZWlnaHQSFQoGa2V5X2NkGAMgASgJUgVrZXlD'
+    'ZA==');
 
 @$core.Deprecated('Use getChoroplethRequestDescriptor instead')
 const GetChoroplethRequest$json = {

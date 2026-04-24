@@ -1272,10 +1272,12 @@ class HeatmapPoint extends $pb.GeneratedMessage {
   factory HeatmapPoint({
     $2.Point? location,
     $core.double? weight,
+    $core.String? keyCd,
   }) {
     final result = create();
     if (location != null) result.location = location;
     if (weight != null) result.weight = weight;
+    if (keyCd != null) result.keyCd = keyCd;
     return result;
   }
 
@@ -1295,6 +1297,7 @@ class HeatmapPoint extends $pb.GeneratedMessage {
     ..aOM<$2.Point>(1, _omitFieldNames ? '' : 'location',
         subBuilder: $2.Point.create)
     ..a<$core.double>(2, _omitFieldNames ? '' : 'weight', $pb.PbFieldType.OD)
+    ..aOS(3, _omitFieldNames ? '' : 'keyCd')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1337,6 +1340,20 @@ class HeatmapPoint extends $pb.GeneratedMessage {
   $core.bool hasWeight() => $_has(1);
   @$pb.TagNumber(2)
   void clearWeight() => $_clearField(2);
+
+  /// key_cd identifies the SafetyIncident this point represents, so the
+  /// client can navigate to the detail screen on pin tap. Heatmap points
+  /// are 1:1 with incidents in the current implementation (no clustering
+  /// yet); if server-side clustering lands later, this field should carry
+  /// a representative incident for the cluster.
+  @$pb.TagNumber(3)
+  $core.String get keyCd => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set keyCd($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasKeyCd() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearKeyCd() => $_clearField(3);
 }
 
 class GetChoroplethRequest extends $pb.GeneratedMessage {
