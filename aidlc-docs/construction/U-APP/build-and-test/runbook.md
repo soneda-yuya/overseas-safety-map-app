@@ -45,11 +45,12 @@
 ### 2.2 親レポ BFF URL
 
 ```bash
-export BFF_URL=$(gcloud run services describe bff \
+# 変数名は以降の --dart-define=BFF_BASE_URL=... にそのまま渡すので統一
+export BFF_BASE_URL=$(gcloud run services describe bff \
   --region=asia-northeast1 \
   --project=overseas-safety-map-test \
   --format='value(status.url)')
-echo "$BFF_URL"
+echo "$BFF_BASE_URL"
 # 例: https://bff-xxxxxxxxxx-an.a.run.app
 ```
 
@@ -82,11 +83,21 @@ flutterfire configure \
 ### 3.1 Android emulator での起動確認（最速経路）
 
 ```bash
-# Android emulator (API 34+) を起動
-open -a Simulator || emulator -avd Pixel_7_API_34 &
+# 利用可能な Android emulator を確認 (事前に Android Studio で AVD を作成しておくこと)
+flutter emulators
+# 例: Pixel_7_API_34 • android • Pixel 7 API 34
 
-flutter run -d emulator \
-  --dart-define=BFF_BASE_URL="$BFF_URL" \
+# 名前指定で起動
+flutter emulators --launch Pixel_7_API_34
+# もしくは: emulator -avd Pixel_7_API_34 &
+
+# 起動後の Android device id を確認
+flutter devices
+# 例: emulator-5554 • android-x64 • ...
+
+# device id を指定して run
+flutter run -d emulator-5554 \
+  --dart-define=BFF_BASE_URL="$BFF_BASE_URL" \
   --dart-define=ENVIRONMENT=dev
 ```
 
@@ -104,7 +115,7 @@ flutter run -d emulator \
 # iPhone を USB で接続、Xcode で signing を Team 設定済み
 flutter devices          # 実機の id を確認
 flutter run -d "${IPHONE_ID}" \
-  --dart-define=BFF_BASE_URL="$BFF_URL" \
+  --dart-define=BFF_BASE_URL="$BFF_BASE_URL" \
   --dart-define=ENVIRONMENT=dev
 ```
 
@@ -142,7 +153,7 @@ U-NTF runbook §3.1 のスクリプトで Pub/Sub に publish、アプリ側の 
 
 ```bash
 # flutterfire configure を飛ばして flutter run
-flutter run --dart-define=BFF_BASE_URL="$BFF_URL"
+flutter run --dart-define=BFF_BASE_URL="$BFF_BASE_URL"
 ```
 
 - [ ] コンソールに `UnsupportedError: firebase_options.dart still contains PR A placeholder values. Run 'flutterfire configure' ...` が出て起動失敗（fail-fast ガードが効いている）
