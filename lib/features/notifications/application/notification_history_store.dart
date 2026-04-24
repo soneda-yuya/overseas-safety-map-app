@@ -31,8 +31,12 @@ class NotificationHistoryNotifier
     final decoded = raw
         .map((s) {
           try {
-            return NotificationEntry.fromJson(
-                jsonDecode(s) as Map<String, Object?>);
+            // jsonDecode returns Map<String, dynamic>; generic invariance
+            // means a direct cast to Map<String, Object?> blows up at
+            // runtime. `Map.from` allocates a new map with the narrower
+            // value type so fromJson can be strictly typed.
+            final m = Map<String, Object?>.from(jsonDecode(s) as Map);
+            return NotificationEntry.fromJson(m);
           } catch (error, stack) {
             _logger.warn(
               'dropping malformed entry',
@@ -59,9 +63,16 @@ class NotificationHistoryNotifier
 
   Future<void> add(NotificationEntry entry) {
     final next = _mutations.then((_) => _doAdd(entry));
-    // Swallow any throw on the chain so one failure doesn't break later
-    // adds. Errors are already logged inside _doAdd / _persist.
-    _mutations = next.catchError((Object _, StackTrace _) {});
+    // Log + swallow any throw on the chain so one failure doesn't break
+    // later adds. The throw is still returned from the `add` Future so a
+    // caller that wants to handle it (e.g. SnackBar) can `await` directly.
+    _mutations = next.catchError((Object error, StackTrace stack) {
+      _logger.warn(
+        'notification history mutation failed',
+        error: error,
+        stackTrace: stack,
+      );
+    });
     return next;
   }
 
@@ -90,7 +101,13 @@ class NotificationHistoryNotifier
       state = const AsyncData([]);
       await _persist(const []);
     });
-    _mutations = next.catchError((Object _, StackTrace _) {});
+    _mutations = next.catchError((Object error, StackTrace stack) {
+      _logger.warn(
+        'notification history clear failed',
+        error: error,
+        stackTrace: stack,
+      );
+    });
     return next;
   }
 

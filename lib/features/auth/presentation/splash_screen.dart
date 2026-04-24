@@ -36,6 +36,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       // currentIdToken() memo, which in turn makes the auth stream emit a
       // User — unblocking the router redirect from /splash → /map.
       await ref.read(idTokenProvider).currentIdToken();
+      // The redirect often navigates away before we get here, so guard
+      // setState with mounted to avoid "setState after dispose" throws.
+      if (!mounted) return;
       setState(() => _signInAttempt = const AsyncValue.data(null));
     } catch (error, stack) {
       _logger.error('anonymous sign-in failed',
