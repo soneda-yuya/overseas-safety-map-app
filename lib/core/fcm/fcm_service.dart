@@ -3,19 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../observability/logger.dart';
 
-/// Top-level, grouped handlers for the three FCM lifecycle stages. The
-/// actual UI wiring (in-app banner, notification history insert, deep-link
-/// on tap) lands in PR B; this file holds the transport-level registration
-/// so PR A's main.dart can compile and a dev can verify device tokens.
+/// Top-level background message handler. Runs in a separate isolate, so
+/// it must be a top-level function (not a class method) and registered via
+/// `FirebaseMessaging.onBackgroundMessage(...)` **before `runApp`** to
+/// reliably receive background pushes. See `main.dart` for the call.
 ///
-/// Background handlers run in a separate isolate; they must be top-level
-/// functions (not class methods), hence the `pragma('vm:entry-point')`.
+/// Keep the handler strictly minimal: it runs without Riverpod, without
+/// Firestore SDK initialised, and under a short deadline. Further
+/// processing (history store insert) happens when the app next starts or
+/// when the user taps the notification.
 @pragma('vm:entry-point')
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
-  // Keep the handler strictly minimal: it runs in an isolate without
-  // Riverpod, without Firestore SDK initialised, and with a short deadline.
-  // Further handling (history store insert) happens when the app next
-  // starts or when the user taps the notification.
   const AppLogger('fcm.bg').info(
     'bg message',
     fields: {'messageId': message.messageId, 'from': message.from},
@@ -28,12 +26,13 @@ class FcmService {
   final FirebaseMessaging _messaging;
   static const _logger = AppLogger('fcm');
 
-  /// Register lifecycle handlers + request permission. Call once after
-  /// Firebase is initialised and before the first RPC that might register
-  /// an FCM token.
+  /// Register foreground / tap listeners + request permission. Call once
+  /// after Firebase is initialised and before the first RPC that might
+  /// register an FCM token. The background-message handler is registered
+  /// separately in `main.dart` before `runApp`; it has to happen there so
+  /// the isolate entry point is set up when a push arrives while the app
+  /// is not running.
   Future<void> start() async {
-    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-
     await _messaging.requestPermission(
       alert: true,
       badge: true,

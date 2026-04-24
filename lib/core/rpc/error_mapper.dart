@@ -2,10 +2,6 @@ import 'package:grpc/grpc.dart';
 
 import '../env.dart';
 
-/// Aliases the gRPC status code surface the rest of the app reads, so
-/// downstream code does not import grpc directly everywhere.
-typedef RpcCode = StatusCode;
-
 /// Application-facing error. The RPC transport's GrpcError is caught here
 /// and translated into an AppError the UI can switch on without knowing
 /// about gRPC internals.

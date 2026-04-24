@@ -23,17 +23,25 @@ class DefaultFirebaseOptions {
         'Run `flutterfire configure --platforms=web` to regenerate.',
       );
     }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.iOS:
-        return ios;
-      case TargetPlatform.android:
-        return android;
-      default:
-        throw UnsupportedError(
+    final options = switch (defaultTargetPlatform) {
+      TargetPlatform.iOS => ios,
+      TargetPlatform.android => android,
+      _ => throw UnsupportedError(
           'DefaultFirebaseOptions is only wired for iOS + Android. '
           'Run `flutterfire configure` to regenerate for other platforms.',
-        );
+        ),
+    };
+    // Fail fast on the scaffold values shipped in PR A. Without this guard
+    // Firebase.initializeApp succeeds and the first real API call fails far
+    // from the root cause.
+    if (options.apiKey.startsWith('PLACEHOLDER_')) {
+      throw UnsupportedError(
+        'firebase_options.dart still contains PR A placeholder values. '
+        'Run `flutterfire configure` to generate real config before running '
+        'on a device.',
+      );
     }
+    return options;
   }
 
   // PLACEHOLDER — regenerate via `flutterfire configure` for a real project.
