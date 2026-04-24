@@ -16,23 +16,39 @@ class AppLogger {
   /// `name:` field of dart:developer.log.
   final String scope;
 
-  void info(String message, {Object? error, Map<String, Object?>? fields}) {
+  void info(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? fields,
+  }) {
     if (Env.isProd) return;
-    _log(0, message, error: error, fields: fields);
+    _log(0, message, error: error, stackTrace: stackTrace, fields: fields);
   }
 
-  void warn(String message, {Object? error, Map<String, Object?>? fields}) {
-    _log(900, message, error: error, fields: fields);
+  void warn(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? fields,
+  }) {
+    _log(900, message, error: error, stackTrace: stackTrace, fields: fields);
   }
 
-  void error(String message, {Object? error, Map<String, Object?>? fields}) {
-    _log(1000, message, error: error, fields: fields);
+  void error(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    Map<String, Object?>? fields,
+  }) {
+    _log(1000, message, error: error, stackTrace: stackTrace, fields: fields);
   }
 
   void _log(
     int level,
     String message, {
     Object? error,
+    StackTrace? stackTrace,
     Map<String, Object?>? fields,
   }) {
     final enriched = fields == null || fields.isEmpty
@@ -43,6 +59,7 @@ class AppLogger {
       level: level,
       name: scope,
       error: error,
+      stackTrace: stackTrace,
     );
   }
 }

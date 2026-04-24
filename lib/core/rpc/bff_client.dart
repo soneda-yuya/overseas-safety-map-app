@@ -35,6 +35,19 @@ class BffClient {
     required IdTokenProvider idTokenProvider,
   }) {
     final uri = Uri.parse(baseUrl);
+    // `Uri.parse('localhost:8080')` yields scheme='localhost', host='',
+    // which would silently create a ClientChannel with an invalid host.
+    // Demand an absolute http/https URL so the failure mode is loud.
+    if ((uri.scheme != 'http' && uri.scheme != 'https') || uri.host.isEmpty) {
+      throw ArgumentError.value(
+        baseUrl,
+        'baseUrl',
+        'BFF_BASE_URL must be an absolute http/https URL '
+            '(e.g. "https://bff.example.com"). '
+            'Got scheme=${uri.scheme}, host=${uri.host}.',
+      );
+    }
+
     final channel = ClientChannel(
       uri.host,
       port: uri.hasPort ? uri.port : (uri.scheme == 'https' ? 443 : 80),
@@ -82,8 +95,11 @@ final bffClientProvider = Provider<BffClient>((ref) {
   ref.onDispose(() {
     unawaited(
       client.close().catchError(
-        (Object error, StackTrace stack) =>
-            _disposeLogger.warn('channel shutdown failed', error: error),
+        (Object error, StackTrace stack) => _disposeLogger.warn(
+          'channel shutdown failed',
+          error: error,
+          stackTrace: stack,
+        ),
       ),
     );
   });
