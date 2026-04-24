@@ -1,14 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// IdTokenProvider is the narrow port that [AuthInterceptor] depends on.
-/// Keeping it as a named interface lets tests swap in a deterministic token
-/// source without booting Firebase.
+/// IdTokenProvider is the narrow port that [AuthClientInterceptor] depends
+/// on. Keeping it as a named interface lets tests swap in a deterministic
+/// token source without booting Firebase.
 abstract class IdTokenProvider {
-  /// Returns a Firebase ID Token. Pass `forceRefresh: true` to bypass the
-  /// SDK cache (the AuthInterceptor uses this on every RPC so a near-expiry
-  /// token is never handed to the server). Returns null if the user is not
-  /// signed in.
+  /// Returns a Firebase ID token. Default behaviour relies on the Firebase
+  /// Auth SDK cache: the SDK auto-refreshes when a token is within ~5
+  /// minutes of expiry, so ordinary RPC call sites do not need to force a
+  /// refresh. Pass `forceRefresh: true` to bypass that cache and mint a
+  /// brand-new token (useful for surfacing backend revocation immediately).
+  /// Returns null if the user is not signed in.
   Future<String?> currentIdToken({bool forceRefresh = false});
 }
 

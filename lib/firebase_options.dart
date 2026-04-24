@@ -6,12 +6,22 @@
 // The values below are non-functional. Production secrets are not required —
 // Firebase config IDs are public by design (see firebase-setup.md).
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 class DefaultFirebaseOptions {
   const DefaultFirebaseOptions._();
 
   static FirebaseOptions get currentPlatform {
+    // `defaultTargetPlatform` on web reports iOS / Android depending on the
+    // UA, which would silently hand back mobile config. Gate web first so
+    // the error surfaces instead of an implicit wrong platform.
+    if (kIsWeb) {
+      throw UnsupportedError(
+        'DefaultFirebaseOptions is not wired for web in MVP. '
+        'Run `flutterfire configure --platforms=web` to regenerate.',
+      );
+    }
     switch (defaultTargetPlatform) {
       case TargetPlatform.iOS:
         return ios;

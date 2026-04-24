@@ -7,6 +7,14 @@ import '../observability/logger.dart';
 /// The generated pbgrpc clients accept a `List<ClientInterceptor>` in their
 /// constructor; this class plugs in at that layer.
 ///
+/// Token policy: the interceptor calls `IdTokenProvider.currentIdToken()`
+/// without `forceRefresh: true`. That is intentional — Firebase's SDK cache
+/// already auto-refreshes when the cached token is within ~5 minutes of
+/// expiry, and forcing a network round-trip on every RPC would hurt p95.
+/// Callers that need an immediately-fresh token (e.g. after seeing a
+/// server-side revocation) can invoke `currentIdToken(forceRefresh: true)`
+/// directly.
+///
 /// We picked the grpc package's interceptor API (not connectrpc's Interceptor
 /// typedef) because the generated `.pbgrpc.dart` clients still use
 /// `$grpc.Client` as of protoc_plugin 22.5 (see code-generation-plan Q C /

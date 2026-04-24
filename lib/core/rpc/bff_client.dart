@@ -1,9 +1,12 @@
+import 'dart:async' show unawaited;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grpc/grpc.dart';
 
 import '../../gen/v1/safetymap.pbgrpc.dart';
 import '../auth/anonymous_auth.dart';
 import '../env.dart';
+import '../observability/logger.dart';
 import 'auth_interceptor.dart';
 
 /// Factory for the three BFF Connect service clients. Generated pbgrpc
@@ -65,11 +68,24 @@ class BffClient {
   Future<void> close() => channel.shutdown();
 }
 
+const _disposeLogger = AppLogger('rpc.bff.dispose');
+
 final bffClientProvider = Provider<BffClient>((ref) {
   final client = BffClient.fromBaseUrl(
     baseUrl: Env.bffBaseUrl,
     idTokenProvider: ref.watch(idTokenProvider),
   );
-  ref.onDispose(client.close);
+  // Riverpod's onDispose callback is sync-only — if `close` returned a
+  // Future directly we'd silently drop any shutdown error. Wrap in a sync
+  // closure so the Future is explicitly fire-and-forget and any error is
+  // logged rather than dropped.
+  ref.onDispose(() {
+    unawaited(
+      client.close().catchError(
+        (Object error, StackTrace stack) =>
+            _disposeLogger.warn('channel shutdown failed', error: error),
+      ),
+    );
+  });
   return client;
 });
