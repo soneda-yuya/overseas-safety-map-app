@@ -113,7 +113,7 @@ class _MapBody extends StatelessWidget {
                     height: 32,
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTap: () => _openPinSheet(context, p.keyCd),
+                      onTap: () => _openPinSheet(context, p.location),
                       child: const Center(
                         child: _IncidentDot(),
                       ),
@@ -168,12 +168,12 @@ class _IncidentDot extends StatelessWidget {
   }
 }
 
-Future<void> _openPinSheet(BuildContext context, String keyCd) {
+Future<void> _openPinSheet(BuildContext context, LatLng center) {
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: false,
     isScrollControlled: true,
-    builder: (_) => PinDetailSheet(keyCd: keyCd),
+    builder: (_) => PinDetailSheet(center: center),
   );
 }
 
