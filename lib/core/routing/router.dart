@@ -20,9 +20,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       // While Firebase is still initialising the stream has no value yet;
       // send the user to /splash so we don't render a tab whose data
       // providers would immediately fail the auth interceptor.
+      // The originally requested location is preserved in a `from` query
+      // param so deep links (e.g. a notification tap opening
+      // /incidents/detail/:keyCd) survive the sign-in round-trip.
       final loggedIn = auth.asData?.value != null;
-      if (!loggedIn && state.matchedLocation != '/splash') return '/splash';
-      if (loggedIn && state.matchedLocation == '/splash') return '/map';
+      if (!loggedIn && state.matchedLocation != '/splash') {
+        final from = Uri.encodeComponent(state.uri.toString());
+        return '/splash?from=$from';
+      }
+      if (loggedIn && state.matchedLocation == '/splash') {
+        final from = state.uri.queryParameters['from'];
+        if (from != null && from.isNotEmpty) {
+          return Uri.decodeComponent(from);
+        }
+        return '/map';
+      }
       return null;
     },
     refreshListenable: refresh,

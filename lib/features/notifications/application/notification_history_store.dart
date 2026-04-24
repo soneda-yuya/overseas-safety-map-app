@@ -96,8 +96,15 @@ class NotificationHistoryNotifier
 
   Future<void> clear() {
     // clear() also goes through the mutation chain so it is serialised
-    // relative to pending adds.
+    // relative to pending adds. We also await `future` first so a
+    // clear() that fires before the initial `build()` completes does not
+    // race: without this, build() could land after `state = []` and
+    // reintroduce the persisted entries.
     final next = _mutations.then((_) async {
+      final snapshot = state;
+      if (snapshot is! AsyncData<List<NotificationEntry>>) {
+        await future;
+      }
       state = const AsyncData([]);
       await _persist(const []);
     });
