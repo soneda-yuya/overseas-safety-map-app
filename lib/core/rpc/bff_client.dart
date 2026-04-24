@@ -47,6 +47,19 @@ class BffClient {
             'Got scheme=${uri.scheme}, host=${uri.host}.',
       );
     }
+    // ClientChannel only consumes host + port; any path, query, or fragment
+    // on baseUrl is silently discarded. Refuse them rather than ship an RPC
+    // client that ignores its own configuration.
+    final hasExtraPath = uri.path.isNotEmpty && uri.path != '/';
+    if (hasExtraPath || uri.hasQuery || uri.hasFragment) {
+      throw ArgumentError.value(
+        baseUrl,
+        'baseUrl',
+        'BFF_BASE_URL must be scheme+host(+port) only; '
+            'path / query / fragment are not supported '
+            '(grpc ClientChannel ignores them).',
+      );
+    }
 
     final channel = ClientChannel(
       uri.host,

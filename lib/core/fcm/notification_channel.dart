@@ -9,11 +9,15 @@ import 'package:flutter/foundation.dart'
 /// arrives while the app is foregrounded still shows as a heads-up banner
 /// (without this, iOS silently delivers to `onMessage` only).
 ///
-/// Android: the Android 8+ Notification Channel is declared in the native
-/// Flutter module's AndroidManifest.xml (`default_notification_channel_id`);
-/// no runtime call is required from Dart for the default channel. If we add
-/// multiple channels later we'll introduce `flutter_local_notifications` and
-/// register them here.
+/// Android: this helper does NOT create or register any notification channel.
+/// Android 8+ will use the system default channel unless the native app
+/// declares one via AndroidManifest.xml (meta-data
+/// `com.google.firebase.messaging.default_notification_channel_id` + a
+/// matching string resource). PR C (or infra follow-up) will add the manifest
+/// entry; until then foreground notifications on Android fall back to the
+/// OS default channel, which is acceptable for MVP. If we later need several
+/// runtime-managed channels we'll introduce `flutter_local_notifications`
+/// and register them here.
 ///
 /// Uses `defaultTargetPlatform` (not `dart:io.Platform`) so the file compiles
 /// on web — web builds are out of MVP scope but the import must not block

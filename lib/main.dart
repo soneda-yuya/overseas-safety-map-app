@@ -18,9 +18,11 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // iOS foreground-banner presentation + any future Android channel setup.
-  // Android 8+'s default channel is declared in AndroidManifest.xml, so the
-  // Dart side currently only has work to do on iOS.
+  // Configure FCM foreground presentation where the Dart side can —
+  // currently only on iOS. Android 8+ falls back to the OS default channel
+  // unless AndroidManifest.xml is extended with
+  // `com.google.firebase.messaging.default_notification_channel_id`;
+  // see notification_channel.dart for the tracking note.
   await bootstrapFcmPresentation();
 
   runApp(const ProviderScope(child: OverseasSafetyMapApp()));
