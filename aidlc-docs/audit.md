@@ -172,3 +172,43 @@
 **Context**: Phase 4-7 (domain / app / presentation / routing) は PR B、Phase 8-10 (tests / CI / docs) は PR C。
 
 ---
+
+## U-APP Code Generation PR B (Phase 4-7) 実装
+
+**Timestamp**: 2026-04-24T07:30:00Z
+**User Input**: "マージしました" → PR #6 merged → Code Gen PR B 着手
+**AI Response**: `feature/u-app-code-gen-b` branch で Phase 4-7 実装:
+
+**Phase 4: Domain**
+- `features/map/domain/{map_filter,choropleth,heatmap}.dart`: MapFilter / ChoroplethEntry(color parse) / HeatmapResult
+- `features/incidents/domain/{incident,incident_filter}.dart`: Incident VO + GeocodeSource enum + IncidentFilter + IncidentPage (cursor)
+- `features/profile/domain/user_profile.dart`: UserProfile + NotificationPreference
+- `features/notifications/domain/notification_entry.dart`: NotificationEntry + JSON serde
+
+**Phase 5: Application + proto↔domain mappers**
+- `core/rpc/mappers.dart`: 全 proto ⇄ domain 変換（Feature 側が gen/ を import しない境界）
+- `features/incidents/application/{list,get,search}_usecase.dart`: FutureProvider.autoDispose.family
+- `features/map/application/{choropleth,heatmap,nearby}_usecase.dart`
+- `features/profile/application/profile_usecases.dart`: ProfileRemote + 4 RPC + profileProvider
+- `features/notifications/application/notification_history_store.dart`: AsyncNotifier + shared_preferences、cap 100 件
+
+**Phase 6: Presentation**
+- `shared/widgets/async_retry.dart`: 共通 error + retry widget、AppError kind→日本語
+- `features/auth/presentation/splash_screen.dart`: Firebase init 中の表示
+- `features/map/presentation/map_screen.dart`: flutter_map + OSM tile + heatmap markers + OSM attribution + centroid fallback notice
+- `features/incidents/presentation/list_screen.dart`: リスト + infoType 色分け + 日付 + context.push 遷移
+- `features/incidents/presentation/detail_screen.dart`: 詳細 + 外務省 URL 遷移
+- `features/profile/presentation/profile_screen.dart`: 設定画面、preference enabled SwitchListTile
+- `features/notifications/presentation/notification_history_screen.dart`: 履歴 + clear ボタン + keyCd 詳細遷移
+
+**Phase 7: Routing**
+- `core/routing/router.dart`: go_router + ShellRoute + NavigationBar + auth redirect + refreshListenable
+- `app.dart`: MaterialApp.router で router を配線
+
+**検証**:
+- flutter analyze 緑 (No issues found)
+- flutter test 緑 (1 passed)
+
+**Context**: Phase 8-10 (tests + CI + docs) は PR C。
+
+---
