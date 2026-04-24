@@ -44,7 +44,12 @@ dom.Incident incidentFromProto(pbv1.SafetyIncident p) {
     title: p.title,
     countryCd: p.countryCd,
     countryName: p.countryName,
-    leaveDate: p.leaveDate.toDateTime().toLocal(),
+    // Keep the wire timestamp in UTC. `leave_date` is essentially a
+    // calendar day in the server's frame of reference; calling
+    // `.toLocal()` here would shift the displayed day for users in
+    // negative offsets (e.g. UTC 00:00 Apr 1 → Mar 31 in US/Pacific).
+    // Formatters render the year/month/day directly from the UTC value.
+    leaveDate: p.leaveDate.toDateTime(),
     location: LatLng(p.geometry.lat, p.geometry.lng),
     geocodeSource: _geocodeSourceFromProto(p.geocodeSource),
     lead: p.lead,
