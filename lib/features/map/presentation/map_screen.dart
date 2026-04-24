@@ -77,7 +77,12 @@ class _MapBody extends StatelessWidget {
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'jp.go.mofa.overseas_safety_map',
+              // Must match the Android applicationId (see
+              // android/app/build.gradle.kts) so OSM's Tile Usage Policy
+              // can attribute requests correctly. Keep in sync if the
+              // applicationId is ever changed.
+              userAgentPackageName:
+                  'jp.go.mofa.overseas_safety_map.overseas_safety_map_app',
               maxZoom: 19,
             ),
             MarkerLayer(

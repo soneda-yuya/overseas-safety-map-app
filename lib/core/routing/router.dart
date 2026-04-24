@@ -29,11 +29,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/splash?from=$from';
       }
       if (loggedIn && state.matchedLocation == '/splash') {
-        final from = state.uri.queryParameters['from'];
-        if (from != null && from.isNotEmpty) {
-          return Uri.decodeComponent(from);
-        }
-        return '/map';
+        return _sanitizedFrom(state.uri.queryParameters['from']) ?? '/map';
       }
       return null;
     },
@@ -73,6 +69,26 @@ final routerProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+/// Validates the `from` query param before redirecting to it. Returns the
+/// sanitized path (including any query) if it is a safe in-app location,
+/// or null if the caller should fall back to /map.
+///
+/// An attacker could craft `/splash?from=https://evil.com` or similar;
+/// reject anything that is not a scheme-less path starting with `/` and
+/// has no authority component.
+String? _sanitizedFrom(String? raw) {
+  if (raw == null || raw.isEmpty) return null;
+  final Uri decoded;
+  try {
+    decoded = Uri.parse(Uri.decodeComponent(raw));
+  } catch (_) {
+    return null;
+  }
+  if (decoded.hasScheme || decoded.hasAuthority) return null;
+  if (!decoded.path.startsWith('/')) return null;
+  return decoded.toString();
+}
 
 /// Drives go_router's `refreshListenable` off the Firebase auth state. Every
 /// emission triggers a redirect re-evaluation so the user is pushed from
