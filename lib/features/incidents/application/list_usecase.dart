@@ -38,5 +38,5 @@ final listIncidentsUseCaseProvider = Provider<ListIncidentsUseCase>(
 /// the list screen releases the cache.
 final incidentsPageProvider = FutureProvider.autoDispose
     .family<IncidentPage, IncidentFilter>((ref, filter) async {
-  return ref.watch(listIncidentsUseCaseProvider).execute(filter);
-});
+      return ref.watch(listIncidentsUseCaseProvider).execute(filter);
+    });

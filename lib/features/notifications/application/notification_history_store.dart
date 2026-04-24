@@ -128,5 +128,6 @@ class NotificationHistoryNotifier
 }
 
 final notificationHistoryProvider =
-    AsyncNotifierProvider<NotificationHistoryNotifier,
-        List<NotificationEntry>>(NotificationHistoryNotifier.new);
+    AsyncNotifierProvider<NotificationHistoryNotifier, List<NotificationEntry>>(
+      NotificationHistoryNotifier.new,
+    );

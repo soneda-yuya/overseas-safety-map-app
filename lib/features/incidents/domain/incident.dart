@@ -43,8 +43,7 @@ class Incident {
   final String infoUrl;
   final String extractedLocation;
 
-  bool get isCentroidFallback =>
-      geocodeSource == GeocodeSource.countryCentroid;
+  bool get isCentroidFallback => geocodeSource == GeocodeSource.countryCentroid;
 }
 
 /// Opaque cursor + items pair. Callers pass the cursor straight back to the

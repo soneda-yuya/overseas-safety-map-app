@@ -29,7 +29,7 @@ final getIncidentUseCaseProvider = Provider<GetIncidentUseCase>(
   (ref) => GetIncidentUseCase(ref.watch(bffClientProvider)),
 );
 
-final incidentDetailProvider =
-    FutureProvider.autoDispose.family<Incident, String>((ref, keyCd) async {
-  return ref.watch(getIncidentUseCaseProvider).execute(keyCd);
-});
+final incidentDetailProvider = FutureProvider.autoDispose
+    .family<Incident, String>((ref, keyCd) async {
+      return ref.watch(getIncidentUseCaseProvider).execute(keyCd);
+    });

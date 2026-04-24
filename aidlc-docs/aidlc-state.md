@@ -7,7 +7,7 @@
 - **親プロジェクト**: [`overseas-safety-map`](https://github.com/soneda-yuya/overseas-safety-map)（Go サーバーモノレポ、backend 5 Unit 完成済み）
 - **Unit ID**: U-APP
 - **現在のフェーズ**: CONSTRUCTION
-- **現在のステージ**: U-APP Minimal 合本版 計画（Design Plan）
+- **現在のステージ**: U-APP Code Generation PR C（Phase 8-10: tests + CI + docs）実装完了、PR レビュー待ち
 
 ## 親プロジェクトとの関係
 このリポジトリは **U-APP 専用**。INCEPTION フェーズのアーティファクト（要件分析 / ユーザーストーリー / アプリケーション設計 / ユニット生成）は親リポジトリ `overseas-safety-map` の [`aidlc-docs/inception/`](https://github.com/soneda-yuya/overseas-safety-map/tree/main/aidlc-docs/inception) にある。本リポジトリは CONSTRUCTION フェーズの U-APP 部分のみを持つ。
@@ -57,13 +57,15 @@
 
 ### 🟢 CONSTRUCTION フェーズ（U-APP のみ）
 
-- [ ] Minimal 合本版 計画（Functional + NFR Req + NFR Design）— 着手中
-- [ ] Minimal 合本版 本編
-- [ ] インフラ設計 計画
-- [ ] インフラ設計 本編
-- [ ] コード生成 計画
-- [ ] コード生成（Flutter 実装）
-- [ ] ビルドとテスト（iOS / Android 実機）
+- [x] Minimal 合本版 計画（Functional + NFR Req + NFR Design）— PR #1 merged
+- [x] Minimal 合本版 本編（Q1-Q10 [A]）— PR #2 merged
+- [x] インフラ設計 計画（Q1-Q6 [A]）— PR #3 merged
+- [x] インフラ設計 本編（firebase-setup + mobile-deployment）— PR #4 merged
+- [x] コード生成 計画（Phase 1-10 + Q A-F [A]）— PR #5 merged
+- [x] コード生成 PR A（Phase 1-3: deps + Firebase + proto + core）— PR #6 merged（Copilot 6 round 対応）
+- [x] コード生成 PR B（Phase 4-7: domain + app + presentation + routing）— PR #7 merged（Copilot 7 round 対応）
+- [ ] コード生成 PR C（Phase 8-10: tests + CI + docs）— 実装完了、PR レビュー待ち
+- [ ] ビルドとテスト runbook（iOS / Android 実機での BFF 疎通手順）
 
 ### 🟡 OPERATIONS フェーズ
 - [ ] オペレーション（プレースホルダー）

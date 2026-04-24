@@ -30,5 +30,5 @@ final choroplethUseCaseProvider = Provider<ChoroplethUseCase>(
 
 final choroplethProvider = FutureProvider.autoDispose
     .family<ChoroplethResult, MapFilter>((ref, filter) async {
-  return ref.watch(choroplethUseCaseProvider).execute(filter);
-});
+      return ref.watch(choroplethUseCaseProvider).execute(filter);
+    });

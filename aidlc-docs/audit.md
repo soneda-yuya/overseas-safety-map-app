@@ -212,3 +212,34 @@
 **Context**: Phase 8-10 (tests + CI + docs) は PR C。
 
 ---
+
+## U-APP Code Generation PR C (Phase 8-10) 実装
+
+**Timestamp**: 2026-04-24T09:00:00Z
+**User Input**: "マージしました" → PR #7 merged → Code Gen PR C 着手
+**AI Response**: `feature/u-app-code-gen-c` branch で Phase 8-10 を実装:
+
+**Phase 8: Tests (30 passing)**
+- test/core/rpc/error_mapper_test.dart: gRPC code → AppErrorKind mapping、cause 保持
+- test/core/rpc/bff_client_test.dart: baseUrl validation 6 ケース
+- test/features/map/domain/{color_test,map_filter_test}.dart: hex parse + sentinel copyWith
+- test/features/incidents/domain/incident_filter_test.dart: sentinel copyWith + deep list equality
+- test/features/notifications/domain/notification_entry_test.dart: JSON roundtrip
+- test/features/notifications/application/notification_history_store_test.dart: 7 シナリオ (empty/add/persist/clear/cap/concurrent/malformed)
+
+**Phase 9: CI**
+- .github/workflows/ci.yml: lint-and-test (dart format + flutter analyze --fatal-infos + flutter test --coverage + lcov summary) + android-debug-build (APK debug)
+
+**Phase 10: Docs**
+- README.md: setup / run / test / リリース / ドキュメント導線
+- aidlc-docs/construction/U-APP/code/summary.md: 全 Phase のファイル一覧 + env + テスト + 2 follow-up 記録
+- aidlc-docs/aidlc-state.md: U-APP 進捗更新
+
+**検証**:
+- flutter analyze --fatal-infos 緑
+- flutter test 緑 (30 passed)
+- dart format 緑
+
+**Context**: U-APP Code Generation 全完了。残りは Build and Test runbook + 実機疎通。
+
+---

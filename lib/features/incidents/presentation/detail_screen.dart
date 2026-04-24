@@ -26,10 +26,7 @@ class DetailScreen extends ConsumerWidget {
         data: (incident) => ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Text(
-              incident.title,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(incident.title, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 8),
             Text(
               '${incident.countryName} · ${_formatDate(incident.leaveDate)}'
@@ -78,25 +75,25 @@ Future<void> _openExternal(BuildContext context, String raw) async {
   final uri = Uri.tryParse(raw);
   if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('リンクが不正です。')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('リンクが不正です。')));
     }
     return;
   }
   try {
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(failure)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text(failure)));
     }
   } catch (error, stack) {
     logger.warn('launchUrl threw', error: error, stackTrace: stack);
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(failure)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text(failure)));
     }
   }
 }

@@ -16,16 +16,15 @@ class NotificationEntry {
   final String keyCd;
 
   Map<String, Object?> toJson() => {
-        'receivedAt': receivedAt.toIso8601String(),
-        'title': title,
-        'body': body,
-        'keyCd': keyCd,
-      };
+    'receivedAt': receivedAt.toIso8601String(),
+    'title': title,
+    'body': body,
+    'keyCd': keyCd,
+  };
 
   factory NotificationEntry.fromJson(Map<String, Object?> json) {
     return NotificationEntry(
-      receivedAt:
-          DateTime.parse(json['receivedAt']! as String),
+      receivedAt: DateTime.parse(json['receivedAt']! as String),
       title: json['title']! as String,
       body: json['body']! as String,
       keyCd: json['keyCd']! as String,

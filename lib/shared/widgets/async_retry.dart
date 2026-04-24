@@ -6,11 +6,7 @@ import '../../core/rpc/error_mapper.dart';
 /// AsyncValue resolves to an error. Centralising the message wording keeps
 /// strings consistent and avoids each screen re-inventing a retry button.
 class AsyncRetryBody extends StatelessWidget {
-  const AsyncRetryBody({
-    super.key,
-    required this.error,
-    required this.onRetry,
-  });
+  const AsyncRetryBody({super.key, required this.error, required this.onRetry});
 
   final Object error;
   final VoidCallback onRetry;
