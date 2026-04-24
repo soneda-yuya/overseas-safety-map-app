@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -60,7 +61,7 @@ class _AuthRefresh extends ChangeNotifier {
     _sub = ref.listen(authStateProvider, (_, _) => notifyListeners());
   }
 
-  late final ProviderSubscription<AsyncValue<Object?>> _sub;
+  late final ProviderSubscription<AsyncValue<User?>> _sub;
 
   @override
   void dispose() {

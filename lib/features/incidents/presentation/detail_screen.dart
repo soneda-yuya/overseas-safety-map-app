@@ -68,11 +68,15 @@ class DetailScreen extends ConsumerWidget {
 /// OS refusal) surfaces as a SnackBar instead of a silent no-op. Uses
 /// LaunchMode.externalApplication explicitly so the link opens in the
 /// device browser rather than an in-app webview.
+///
+/// Only http/https are launched — the `infoUrl` ultimately comes from the
+/// server, so restricting schemes prevents launching `file:`, `intent:`,
+/// or arbitrary custom schemes if the wire contract ever slips.
 Future<void> _openExternal(BuildContext context, String raw) async {
   const failure = 'リンクを開けませんでした。';
   const logger = AppLogger('ui.launch_url');
   final uri = Uri.tryParse(raw);
-  if (uri == null) {
+  if (uri == null || (uri.scheme != 'http' && uri.scheme != 'https')) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('リンクが不正です。')),

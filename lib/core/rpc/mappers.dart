@@ -1,5 +1,9 @@
-// proto ⇄ domain converters. Put on the `core/rpc` boundary so feature
-// UseCases stay free of generated protobuf imports.
+// proto ⇄ domain converters. Kept on the `core/rpc` boundary so
+// presentation / domain stay free of generated protobuf imports.
+// Feature UseCases do still import the generated request types (e.g.
+// ListSafetyIncidentsRequest) to build the call payload — that's the
+// deliberate trade-off vs. wrapping every RPC in a hand-written request
+// builder. If we ever add such a builder layer, update this comment.
 import 'package:latlong2/latlong.dart';
 
 import '../../gen/google/protobuf/timestamp.pb.dart' as tspb;
