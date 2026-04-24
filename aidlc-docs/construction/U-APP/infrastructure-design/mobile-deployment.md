@@ -263,6 +263,57 @@ workflow 追加時は `.github/workflows/release.yml` を新設、トリガは `
 - [ ] スクリーンショット（iPhone / Android 各サイズ）準備
 - [ ] Age Rating（日本: 4+、アメリカ: 4+ 想定）
 - [ ] Play Console の Data Safety / App Store Connect の Privacy: 位置情報 + デバイス識別子 + Firebase Analytics（使わないなら「収集しない」）
+- [ ] **Firebase API key restriction 設定**（下記 §5.1、配布直前必須）
+- [ ] **Firebase Security Rules 監査**（下記 §5.2、Firestore / Storage の rules が匿名ユーザーに緩すぎないか）
+- [ ] **Firebase App Check** 導入検討（下記 §5.3、follow-up issue で別途追跡）
+
+### 5.1 Firebase API key restriction（配布前必須）
+
+配布前の APK / IPA には Firebase の Android / iOS API key が **必ずバイナリに含まれる**。APK / IPA を入手した第三者は鍵を抽出して `identitytoolkit.googleapis.com` で匿名 ID Token を発行 → BFF に `Authorization: Bearer <token>` で叩ける（BFF auth interceptor は Firebase プロジェクト所属の有効な token として通してしまう）。結果として認証済みユーザーになりすまして RPC spam / rate 枯渇 / Cloud Run コスト増 / CMS token 消費が可能になる。
+
+これを防ぐために GCP Credentials で **Application restriction** を設定する。Firebase SDK は OS レベルで `X-Android-Package` / `X-Android-Cert` / bundle ID を付与するため、正規アプリ以外のリクエストは Google 側で 403 にできる。
+
+**手順**（release 用 keystore / bundle ID が確定してから）:
+
+```bash
+# 1. Android release keystore の SHA-1 fingerprint を取得
+keytool -list -v -keystore <release.jks> -alias <alias> \
+  -storepass <password> -keypass <password> | grep SHA1
+
+# 2. gcloud で Android キーに restriction を追加
+#    (既存 API restriction は温存、application restriction だけ上書き)
+gcloud services api-keys update projects/9675530544/locations/global/keys/<android-key-uid> \
+  --allowed-application=sha1_fingerprint=<SHA1>,package_name=jp.go.mofa.overseas_safety_map.overseas_safety_map_app \
+  --project=overseas-safety-map
+
+# 3. iOS キーに bundle ID restriction を追加
+gcloud services api-keys update projects/9675530544/locations/global/keys/<ios-key-uid> \
+  --allowed-bundle-ids=jp.go.mofa.overseassafetymap.overseasSafetyMapApp \
+  --project=overseas-safety-map
+```
+
+- Android key の uid / iOS key の uid は `gcloud services api-keys list` で取得
+- `debug.keystore` の SHA-1 は **含めない**（release build には debug 署名が存在しないので不要、攻撃面を増やすだけ）
+- Play Store からの App Signing を使っている場合、Google が自動再署名するので **Play Console → Setup → App signing の SHA-1** を使うこと（keytool のローカル値ではない）
+
+### 5.2 Firebase Security Rules 監査
+
+匿名認証を許容しているので `request.auth != null` だけでは「誰でも書ける」と同義。Firestore / Storage の rules が最低限 `request.auth.uid == <uid field>` あるいは role-based になっているか確認。
+
+```bash
+firebase firestore:rules:get --project=overseas-safety-map
+firebase storage:rules:get --project=overseas-safety-map
+```
+
+User Profile 系は本アプリが BFF 経由でしか書き込まないので、**直書き禁止**（CMS / BFF の service account のみ）にするのが本筋。
+
+### 5.3 Firebase App Check（配布後の運用で — [#12](https://github.com/soneda-yuya/overseas-safety-map-app/issues/12) で追跡）
+
+§5.1 の restriction は「99% の自動スキャン・素人攻撃」を弾くが、motivated attacker が APK を re-sign すれば回避可能。完全な attestation は [Firebase App Check](https://firebase.google.com/docs/app-check) が必要（Play Integrity API / Apple DeviceCheck による device 正当性証明）。
+
+- Flutter: `firebase_app_check` パッケージ + `debug` provider for dev / `playIntegrity` for Android release / `deviceCheck` (または `appAttest`) for iOS release
+- BFF: Firebase Admin SDK の [App Check token 検証](https://firebase.google.com/docs/app-check/custom-resource-backend#verify-token)
+- CI ビルド時に Play Integrity / App Attest の configuration を一式用意する必要があるため、リリース直後の first follow-up として扱う
 
 ---
 
