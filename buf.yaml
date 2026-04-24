@@ -1,0 +1,15 @@
+# Proto lint / breaking config for the U-APP repo. The proto definitions are
+# copied from the parent repo overseas-safety-map (Q B [A]); re-sync manually
+# when the parent proto changes.
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD
+  except:
+    - PACKAGE_DIRECTORY_MATCH  # matches parent repo layout: proto/v1/ not proto/overseasmap/v1/
+breaking:
+  use:
+    - FILE
+deps: []
