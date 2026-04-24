@@ -117,6 +117,7 @@ HeatmapResult heatmapFromProto(pbv1.GetHeatmapResponse r) {
     points: r.points
         .map(
           (p) => HeatmapPoint(
+            keyCd: p.keyCd,
             location: LatLng(p.location.lat, p.location.lng),
             weight: p.weight,
           ),
