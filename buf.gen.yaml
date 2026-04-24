@@ -1,8 +1,11 @@
 version: v2
 clean: true
-# Generate Dart protobuf classes + Connect client stubs. The `dart` plugin
-# comes from `protoc_plugin` (dev dep, Q C — resolved to ^22.5.0 pending
-# connectrpc supporting protobuf 6.x; see audit.md / plan PR #5).
+# Generate Dart protobuf classes + gRPC service stubs (*.pb.dart +
+# *.pbgrpc.dart). The plugin comes from `protoc_plugin` (dev dep, Q C —
+# resolved to ^22.5.0 pending connectrpc supporting protobuf 6.x;
+# see audit.md / plan PR #5). A Dart Connect-protocol code generator does
+# not exist on pub.dev yet; once it lands we'll switch the plugin and the
+# comment below should be updated to say "Connect service stubs".
 #
 # Generated files are committed under lib/gen/v1/ so fresh clones build
 # without running buf locally.

@@ -9,14 +9,16 @@ import '../env.dart';
 import '../observability/logger.dart';
 import 'auth_interceptor.dart';
 
-/// Factory for the three BFF Connect service clients. Generated pbgrpc
-/// clients share a single channel + interceptor list so the Firebase ID
-/// token is attached to every RPC.
+/// Factory for the three BFF gRPC service clients. Generated `.pbgrpc.dart`
+/// clients share a single ClientChannel + interceptor list so the Firebase
+/// ID token is attached to every RPC.
 ///
-/// NB: we use the grpc package (ClientChannel) rather than the connectrpc
-/// Transport because the generated `.pbgrpc.dart` is grpc-flavoured today.
-/// Once the Dart Connect code generator lands, the channel can be swapped
-/// without touching call sites. See code-generation-plan Q C note.
+/// Connect-protocol migration: the Dart side today uses the `grpc` package
+/// because that is what the generated `.pbgrpc.dart` targets; the BFF
+/// speaks Connect over HTTP/2, which is grpc-wire compatible on the
+/// unary path we use. Once a Dart Connect code generator lands on pub.dev
+/// (tracked in code-generation-plan Q C) we can swap ClientChannel for
+/// connectrpc.Transport without touching call sites.
 class BffClient {
   BffClient._({
     required this.channel,

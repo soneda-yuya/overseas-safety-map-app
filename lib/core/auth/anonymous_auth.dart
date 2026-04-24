@@ -21,10 +21,33 @@ class FirebaseIdTokenProvider implements IdTokenProvider {
 
   final FirebaseAuth _auth;
 
+  /// In-flight anonymous sign-in Future. At startup multiple providers can
+  /// call `currentIdToken` in parallel; without this memo each would trigger
+  /// its own `signInAnonymously`, producing duplicate anonymous users and
+  /// a racey auth state. Serialise on the first caller and share the Future
+  /// with everyone else.
+  Future<UserCredential>? _pendingSignIn;
+
   @override
   Future<String?> currentIdToken({bool forceRefresh = false}) async {
-    final user = _auth.currentUser ?? (await _auth.signInAnonymously()).user;
+    final user = await _currentOrSignInAnonymously();
     return user?.getIdToken(forceRefresh);
+  }
+
+  Future<User?> _currentOrSignInAnonymously() async {
+    final existing = _auth.currentUser;
+    if (existing != null) return existing;
+
+    final future = _pendingSignIn ??= _auth.signInAnonymously();
+    try {
+      return (await future).user;
+    } finally {
+      // Clear only if no one swapped a new in-flight Future in while we
+      // awaited; this is safe because we're single-threaded on this path.
+      if (identical(_pendingSignIn, future)) {
+        _pendingSignIn = null;
+      }
+    }
   }
 }
 

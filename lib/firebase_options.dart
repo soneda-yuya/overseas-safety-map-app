@@ -4,7 +4,8 @@
 // yet; the Build and Test phase will regenerate it.
 //
 // The values below are non-functional. Production secrets are not required —
-// Firebase config IDs are public by design (see firebase-setup.md).
+// Firebase config IDs are public by design (see
+// aidlc-docs/construction/U-APP/infrastructure-design/firebase-setup.md).
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
