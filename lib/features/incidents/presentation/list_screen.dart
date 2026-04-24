@@ -10,11 +10,7 @@ import '../domain/incident_filter.dart';
 /// Incidents tab. MVP shows the first page of incidents for the current
 /// filter; country dropdown + info-type filter lands in a follow-up.
 class ListScreen extends ConsumerStatefulWidget {
-  const ListScreen({
-    super.key,
-    this.initialCountryCd,
-    this.initialCountryName,
-  });
+  const ListScreen({super.key, this.initialCountryCd, this.initialCountryName});
 
   /// Country code to pre-filter on (e.g. from a map tap via
   /// `/incidents?country=XX`). Null means no country filter.

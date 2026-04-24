@@ -28,11 +28,7 @@ class PinDetailSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final args = NearbyArgs(
-      center: center,
-      radiusKm: _radiusKm,
-      limit: _limit,
-    );
+    final args = NearbyArgs(center: center, radiusKm: _radiusKm, limit: _limit);
     final async = ref.watch(nearbyProvider(args));
 
     return SafeArea(
@@ -84,7 +80,8 @@ class _DataBody extends StatelessWidget {
       orElse: () => items.first,
     );
     final canDrillDown =
-        pivotCountry.countryCd.isNotEmpty && pivotCountry.countryName.isNotEmpty;
+        pivotCountry.countryCd.isNotEmpty &&
+        pivotCountry.countryName.isNotEmpty;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

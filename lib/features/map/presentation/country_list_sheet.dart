@@ -32,17 +32,13 @@ class CountryListSheet extends ConsumerWidget {
             const Divider(height: 1),
             Expanded(
               child: async.when(
-                loading: () =>
-                    const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(child: CircularProgressIndicator()),
                 error: (e, _) => AsyncRetryBody(
                   error: e,
-                  onRetry: () =>
-                      ref.invalidate(choroplethProvider(filter)),
+                  onRetry: () => ref.invalidate(choroplethProvider(filter)),
                 ),
-                data: (result) => _Body(
-                  result: result,
-                  scrollController: scrollController,
-                ),
+                data: (result) =>
+                    _Body(result: result, scrollController: scrollController),
               ),
             ),
           ],
@@ -82,16 +78,10 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
       child: Row(
         children: [
-          Text(
-            '国別件数',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('国別件数', style: Theme.of(context).textTheme.titleMedium),
           const Spacer(),
           if (total != null)
-            Text(
-              '全 $total 件',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            Text('全 $total 件', style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
     );

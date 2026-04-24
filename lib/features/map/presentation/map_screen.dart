@@ -114,9 +114,7 @@ class _MapBody extends StatelessWidget {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () => _openPinSheet(context, p.location),
-                      child: const Center(
-                        child: _IncidentDot(),
-                      ),
+                      child: const Center(child: _IncidentDot()),
                     ),
                   ),
               ],
