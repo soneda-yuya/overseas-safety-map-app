@@ -243,3 +243,24 @@
 **Context**: U-APP Code Generation 全完了。残りは Build and Test runbook + 実機疎通。
 
 ---
+
+## U-APP Code Generation PR C #8 マージ + Build and Test 着手
+
+**Timestamp**: 2026-04-24T09:40:00Z
+**User Input**: "マージしました"
+**AI Response**: PR #8 (U-APP Code Gen PR C) がマージされ、Code Generation 全完了 (Phase 1-10)。`feature/u-app-build-test` branch を作成し、`construction/U-APP/build-and-test/runbook.md` を生成:
+
+**runbook 構成 (7 セクション、U-BFF / U-NTF runbook の mobile 版)**:
+- §1 目的: 11 項目の検証ポイント (Firebase init / splash + anon sign-in / 地図 heatmap / 一覧 RPC / 詳細 / 設定 Switch 反映 / FCM token register / 3 状態通知 / deep link / prod mask / ChannelShutdown)
+- §2 事前準備: flutterfire configure / APNs Auth Key / BFF URL 取得 / テストデータ投入
+- §3 実行手順: Android emulator → iOS 実機 → BFF 疎通詳細 → FCM 3 状態 → エラーケース (5 種) → Production build
+- §4 トラブルシューティング: placeholder Firebase / iOS FCM 非到達 / Android channel 未登録 / BFF URL 不正 / deep link 失敗
+- §5 観測ポイント: Cold start / navigation / tap / ListIncidents / AppError 率 / FCM 登録率 / delivery 率
+- §6 実行記録: 4 項目プレースホルダー (Android emulator / iOS 実機 / Android 実機 / prod 疎通)
+- §7 関連ドキュメント
+
+**Status**: Template only — Flutter 実機と本番 Firebase が揃い次第運用フェーズで §3 を実施。
+
+**Context**: U-APP の全 8 サブステージ完走見込み。残タスクは親レポ側の全体 Build and Test (統合 runbook) のみ。
+
+---

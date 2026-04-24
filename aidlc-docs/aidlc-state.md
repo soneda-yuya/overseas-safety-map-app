@@ -7,7 +7,7 @@
 - **親プロジェクト**: [`overseas-safety-map`](https://github.com/soneda-yuya/overseas-safety-map)（Go サーバーモノレポ、backend 5 Unit 完成済み）
 - **Unit ID**: U-APP
 - **現在のフェーズ**: CONSTRUCTION
-- **現在のステージ**: U-APP Code Generation PR C（Phase 8-10: tests + CI + docs）実装完了、PR レビュー待ち
+- **現在のステージ**: U-APP Build and Test runbook template 生成完了、PR レビュー待ち（全 Unit サブステージ完走見込み）
 
 ## 親プロジェクトとの関係
 このリポジトリは **U-APP 専用**。INCEPTION フェーズのアーティファクト（要件分析 / ユーザーストーリー / アプリケーション設計 / ユニット生成）は親リポジトリ `overseas-safety-map` の [`aidlc-docs/inception/`](https://github.com/soneda-yuya/overseas-safety-map/tree/main/aidlc-docs/inception) にある。本リポジトリは CONSTRUCTION フェーズの U-APP 部分のみを持つ。
@@ -64,8 +64,8 @@
 - [x] コード生成 計画（Phase 1-10 + Q A-F [A]）— PR #5 merged
 - [x] コード生成 PR A（Phase 1-3: deps + Firebase + proto + core）— PR #6 merged（Copilot 6 round 対応）
 - [x] コード生成 PR B（Phase 4-7: domain + app + presentation + routing）— PR #7 merged（Copilot 7 round 対応）
-- [ ] コード生成 PR C（Phase 8-10: tests + CI + docs）— 実装完了、PR レビュー待ち
-- [ ] ビルドとテスト runbook（iOS / Android 実機での BFF 疎通手順）
+- [x] コード生成 PR C（Phase 8-10: tests + CI + docs）— PR #8 merged
+- [ ] ビルドとテスト runbook（iOS / Android 実機での BFF 疎通手順）— 生成済み、PR レビュー待ち。実機疎通は運用フェーズで記録
 
 ### 🟡 OPERATIONS フェーズ
 - [ ] オペレーション（プレースホルダー）
