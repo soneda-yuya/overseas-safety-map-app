@@ -5,10 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Keeping it as a named interface lets tests swap in a deterministic token
 /// source without booting Firebase.
 abstract class IdTokenProvider {
-  /// Returns a fresh Firebase ID Token, forcing Firebase to refresh if the
-  /// cached token is close to expiry. Returns null if the user is not
+  /// Returns a Firebase ID Token. Pass `forceRefresh: true` to bypass the
+  /// SDK cache (the AuthInterceptor uses this on every RPC so a near-expiry
+  /// token is never handed to the server). Returns null if the user is not
   /// signed in.
-  Future<String?> currentIdToken();
+  Future<String?> currentIdToken({bool forceRefresh = false});
 }
 
 /// Firebase-backed implementation. Signs the user in anonymously on first
@@ -19,9 +20,9 @@ class FirebaseIdTokenProvider implements IdTokenProvider {
   final FirebaseAuth _auth;
 
   @override
-  Future<String?> currentIdToken() async {
+  Future<String?> currentIdToken({bool forceRefresh = false}) async {
     final user = _auth.currentUser ?? (await _auth.signInAnonymously()).user;
-    return user?.getIdToken();
+    return user?.getIdToken(forceRefresh);
   }
 }
 

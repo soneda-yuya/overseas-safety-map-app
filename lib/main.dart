@@ -18,10 +18,10 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Android 8+ requires a notification channel to be registered before the
-  // first FCM message arrives; do it at startup so a cold-start push isn't
-  // dropped.
-  await registerAndroidNotificationChannel();
+  // iOS foreground-banner presentation + any future Android channel setup.
+  // Android 8+'s default channel is declared in AndroidManifest.xml, so the
+  // Dart side currently only has work to do on iOS.
+  await bootstrapFcmPresentation();
 
   runApp(const ProviderScope(child: OverseasSafetyMapApp()));
 }
