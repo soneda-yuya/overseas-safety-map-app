@@ -99,12 +99,14 @@ commonpb.Point pointToProto(LatLng p) =>
 ChoroplethResult choroplethFromProto(pbv1.GetChoroplethResponse r) {
   return ChoroplethResult(
     entries: r.items
-        .map((it) => ChoroplethEntry.fromProto(
-              countryCd: it.countryCd,
-              countryName: it.countryName,
-              count: it.count,
-              hex: it.color,
-            ))
+        .map(
+          (it) => ChoroplethEntry.fromProto(
+            countryCd: it.countryCd,
+            countryName: it.countryName,
+            count: it.count,
+            hex: it.color,
+          ),
+        )
         .toList(growable: false),
     total: r.total,
   );
@@ -113,10 +115,12 @@ ChoroplethResult choroplethFromProto(pbv1.GetChoroplethResponse r) {
 HeatmapResult heatmapFromProto(pbv1.GetHeatmapResponse r) {
   return HeatmapResult(
     points: r.points
-        .map((p) => HeatmapPoint(
-              location: LatLng(p.location.lat, p.location.lng),
-              weight: p.weight,
-            ))
+        .map(
+          (p) => HeatmapPoint(
+            location: LatLng(p.location.lat, p.location.lng),
+            weight: p.weight,
+          ),
+        )
         .toList(growable: false),
     excludedFallback: r.excludedFallback,
   );
@@ -128,8 +132,9 @@ profiledom.UserProfile profileFromProto(pbv1.UserProfile p) {
     favoriteCountryCds: List.unmodifiable(p.favoriteCountryCds),
     preference: profiledom.NotificationPreference(
       enabled: p.notificationPreference.enabled,
-      targetCountryCds:
-          List.unmodifiable(p.notificationPreference.targetCountryCds),
+      targetCountryCds: List.unmodifiable(
+        p.notificationPreference.targetCountryCds,
+      ),
       infoTypes: List.unmodifiable(p.notificationPreference.infoTypes),
     ),
     fcmTokenCount: p.fcmTokenCount,

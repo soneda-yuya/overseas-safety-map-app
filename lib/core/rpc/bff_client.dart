@@ -82,10 +82,7 @@ class BffClient {
         channel,
         interceptors: interceptors,
       ),
-      crimeMap: CrimeMapServiceClient(
-        channel,
-        interceptors: interceptors,
-      ),
+      crimeMap: CrimeMapServiceClient(channel, interceptors: interceptors),
       userProfile: UserProfileServiceClient(
         channel,
         interceptors: interceptors,

@@ -41,8 +41,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       if (!mounted) return;
       setState(() => _signInAttempt = const AsyncValue.data(null));
     } catch (error, stack) {
-      _logger.error('anonymous sign-in failed',
-          error: error, stackTrace: stack);
+      _logger.error(
+        'anonymous sign-in failed',
+        error: error,
+        stackTrace: stack,
+      );
       if (!mounted) return;
       setState(() => _signInAttempt = AsyncValue.error(error, stack));
     }

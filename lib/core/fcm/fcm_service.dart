@@ -33,25 +33,21 @@ class FcmService {
   /// the isolate entry point is set up when a push arrives while the app
   /// is not running.
   Future<void> start() async {
-    await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    await _messaging.requestPermission(alert: true, badge: true, sound: true);
 
     FirebaseMessaging.onMessage.listen((message) {
       _logger.info(
         'fg message',
-        fields: {'messageId': message.messageId, 'title': message.notification?.title},
+        fields: {
+          'messageId': message.messageId,
+          'title': message.notification?.title,
+        },
       );
       // TODO(PR B): push into NotificationHistoryStore + surface in-app banner.
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      _logger.info(
-        'tap message',
-        fields: {'messageId': message.messageId},
-      );
+      _logger.info('tap message', fields: {'messageId': message.messageId});
       // TODO(PR B): deep-link into DetailScreen via go_router.
     });
   }

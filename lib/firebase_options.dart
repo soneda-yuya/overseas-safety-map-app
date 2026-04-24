@@ -27,9 +27,9 @@ class DefaultFirebaseOptions {
       TargetPlatform.iOS => ios,
       TargetPlatform.android => android,
       _ => throw UnsupportedError(
-          'DefaultFirebaseOptions is only wired for iOS + Android. '
-          'Run `flutterfire configure` to regenerate for other platforms.',
-        ),
+        'DefaultFirebaseOptions is only wired for iOS + Android. '
+        'Run `flutterfire configure` to regenerate for other platforms.',
+      ),
     };
     // Fail fast on the scaffold values shipped in PR A. Without this guard
     // Firebase.initializeApp succeeds and the first real API call fails far

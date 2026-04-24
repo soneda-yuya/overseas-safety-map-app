@@ -41,8 +41,7 @@ class IncidentFilter {
       leaveFrom: identical(leaveFrom, _unset)
           ? this.leaveFrom
           : leaveFrom as DateTime?,
-      leaveTo:
-          identical(leaveTo, _unset) ? this.leaveTo : leaveTo as DateTime?,
+      leaveTo: identical(leaveTo, _unset) ? this.leaveTo : leaveTo as DateTime?,
       limit: limit ?? this.limit,
       cursor: cursor ?? this.cursor,
     );
@@ -61,14 +60,14 @@ class IncidentFilter {
 
   @override
   int get hashCode => Object.hash(
-        countryCd,
-        areaCd,
-        Object.hashAll(infoTypes),
-        leaveFrom,
-        leaveTo,
-        limit,
-        cursor,
-      );
+    countryCd,
+    areaCd,
+    Object.hashAll(infoTypes),
+    leaveFrom,
+    leaveTo,
+    limit,
+    cursor,
+  );
 }
 
 const Object _unset = Object();

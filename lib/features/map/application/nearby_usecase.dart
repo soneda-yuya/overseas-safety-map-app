@@ -56,5 +56,5 @@ final nearbyUseCaseProvider = Provider<NearbyUseCase>(
 
 final nearbyProvider = FutureProvider.autoDispose
     .family<List<Incident>, NearbyArgs>((ref, args) async {
-  return ref.watch(nearbyUseCaseProvider).execute(args);
-});
+      return ref.watch(nearbyUseCaseProvider).execute(args);
+    });

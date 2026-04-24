@@ -16,9 +16,7 @@ Future<void> main() async {
 
   // Firebase must be ready before any Riverpod provider that reads auth /
   // messaging state spins up.
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Background FCM handler has to be registered BEFORE runApp so that the
   // isolate entry point exists when a push arrives while the app is

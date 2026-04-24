@@ -150,16 +150,16 @@ Future<void> _openOsmCopyright(BuildContext context) async {
   try {
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(failure)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text(failure)));
     }
   } catch (error, stack) {
     logger.warn('launchUrl threw', error: error, stackTrace: stack);
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(failure)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text(failure)));
     }
   }
 }

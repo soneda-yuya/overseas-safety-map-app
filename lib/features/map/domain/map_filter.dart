@@ -15,16 +15,12 @@ class MapFilter {
   /// Sentinel-aware copyWith: pass the param to change it (including
   /// explicit `null` to clear), omit the param to keep the current value.
   /// A plain `param ?? this.param` would prevent clearing date constraints.
-  MapFilter copyWith({
-    Object? leaveFrom = _unset,
-    Object? leaveTo = _unset,
-  }) {
+  MapFilter copyWith({Object? leaveFrom = _unset, Object? leaveTo = _unset}) {
     return MapFilter(
       leaveFrom: identical(leaveFrom, _unset)
           ? this.leaveFrom
           : leaveFrom as DateTime?,
-      leaveTo:
-          identical(leaveTo, _unset) ? this.leaveTo : leaveTo as DateTime?,
+      leaveTo: identical(leaveTo, _unset) ? this.leaveTo : leaveTo as DateTime?,
     );
   }
 

@@ -70,23 +70,29 @@ class _ProfileBodyState extends ConsumerState<_ProfileBody> {
         ListTile(
           leading: const Icon(Icons.flag),
           title: const Text('通知対象国'),
-          subtitle: Text(p.preference.targetCountryCds.isEmpty
-              ? '未設定'
-              : p.preference.targetCountryCds.join(', ')),
+          subtitle: Text(
+            p.preference.targetCountryCds.isEmpty
+                ? '未設定'
+                : p.preference.targetCountryCds.join(', '),
+          ),
         ),
         ListTile(
           leading: const Icon(Icons.category),
           title: const Text('通知種別'),
-          subtitle: Text(p.preference.infoTypes.isEmpty
-              ? '全種別'
-              : p.preference.infoTypes.join(', ')),
+          subtitle: Text(
+            p.preference.infoTypes.isEmpty
+                ? '全種別'
+                : p.preference.infoTypes.join(', '),
+          ),
         ),
         ListTile(
           leading: const Icon(Icons.favorite),
           title: const Text('お気に入り国'),
-          subtitle: Text(p.favoriteCountryCds.isEmpty
-              ? '未設定'
-              : p.favoriteCountryCds.join(', ')),
+          subtitle: Text(
+            p.favoriteCountryCds.isEmpty
+                ? '未設定'
+                : p.favoriteCountryCds.join(', '),
+          ),
         ),
         ListTile(
           leading: const Icon(Icons.devices),
@@ -114,9 +120,7 @@ class _ProfileBodyState extends ConsumerState<_ProfileBody> {
       // Revert + surface failure; the switch snaps back.
       setState(() => _enabled = widget.profile.preference.enabled);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('通知設定の更新に失敗しました。時間をおいて再度お試しください。'),
-        ),
+        const SnackBar(content: Text('通知設定の更新に失敗しました。時間をおいて再度お試しください。')),
       );
     } finally {
       if (mounted) {

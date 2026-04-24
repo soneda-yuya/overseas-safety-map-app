@@ -30,5 +30,5 @@ final heatmapUseCaseProvider = Provider<HeatmapUseCase>(
 
 final heatmapProvider = FutureProvider.autoDispose
     .family<HeatmapResult, MapFilter>((ref, filter) async {
-  return ref.watch(heatmapUseCaseProvider).execute(filter);
-});
+      return ref.watch(heatmapUseCaseProvider).execute(filter);
+    });

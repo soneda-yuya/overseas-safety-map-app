@@ -14,10 +14,7 @@ class HeatmapPoint {
 /// country centroid (dropped from the point cloud; see design §1.8). The
 /// UI can surface that number as a data-quality warning.
 class HeatmapResult {
-  const HeatmapResult({
-    required this.points,
-    required this.excludedFallback,
-  });
+  const HeatmapResult({required this.points, required this.excludedFallback});
 
   final List<HeatmapPoint> points;
   final int excludedFallback;

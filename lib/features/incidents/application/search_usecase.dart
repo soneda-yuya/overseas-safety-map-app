@@ -55,5 +55,5 @@ final searchIncidentsUseCaseProvider = Provider<SearchIncidentsUseCase>(
 
 final incidentsSearchProvider = FutureProvider.autoDispose
     .family<IncidentPage, SearchIncidentsArgs>((ref, args) async {
-  return ref.watch(searchIncidentsUseCaseProvider).execute(args);
-});
+      return ref.watch(searchIncidentsUseCaseProvider).execute(args);
+    });
